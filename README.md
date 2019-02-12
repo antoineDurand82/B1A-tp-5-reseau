@@ -10,7 +10,7 @@ C'est beau
 
 * `net1` : `10.5.1.0/24`
 * `net2` : `10.5.2.0/24`
-* `net12` : **votre choix** (à justifier)
+* `net12` : `10.5.12.0/24`
 
 **Machines :**
 
@@ -24,10 +24,6 @@ Machine | `net1` | `net2` | `net12`
 
 # II. Lancement et configuration du lab
 
-Lancez toutes les machines (ou une par une). Je vous conseille de vous posez tranquillement, et de vous conformez à une liste d'étapes pour ce faire. Ici encore je la fais pour vous, **habituez-vous à utiliser ce genre de petites techniques pour gagner en rigueur**.  
-
-**Prenez des notes de ce que vous faites.**  
-
 ### Checklist IP VMs 
 
 On parle de `client1.tp5.b1`, `client2.tp5.b1` et `server1.tp5.b1` :
@@ -37,10 +33,8 @@ On parle de `client1.tp5.b1`, `client2.tp5.b1` et `server1.tp5.b1` :
   * déja fait dans le patron
 * [X] Désactivation de la carte NAT
   * déja fait dans le patron
-* [ ] [Définition des IPs statiques](../../cours/procedures.md#définir-une-ip-statique)
-* [ ] La connexion SSH doit être fonctionnelle
-  * une fois fait, vous avez vos trois fenêtres SSH ouvertes, une dans chaque machine
-* [ ] [Définition du nom de domaine](../../cours/procedures.md#changer-son-nom-de-domaine)
+* [X] Définition des IPs statiques
+* [X] Définition du nom de domaine
 
 ### Checklist IP Routeurs 
 
