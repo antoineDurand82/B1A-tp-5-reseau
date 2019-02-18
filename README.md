@@ -5,7 +5,7 @@
 
 C'est beau
 
-![C'est beau](gns.png)
+![C'est beau](gns.PNG)
 **Réseaux :**
 
 * `net1` : `10.5.1.0/24`
