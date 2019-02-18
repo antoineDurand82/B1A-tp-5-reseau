@@ -39,19 +39,50 @@ On parle de `client1.tp5.b1`, `client2.tp5.b1` et `server1.tp5.b1` :
 ### Checklist IP Routeurs 
 
 On parle de `router1.tp5.b1` et `router2.tp5.b1` :
-* [ ] [Définition des IPs statiques](../../cours/procedures-cisco.md#définir-une-ip-statique)
-* [ ] [Définition du nom de domaine](../../cours/procedures-cisco.md#changer-son-nom-de-domaine)
+* [X] Définition des IPs statiques & définition du nom de domaine
+  * Router 1:
+  ```
+  router1#show ip int br
+  Interface                  IP-Address      OK? Method Status                Protocol
+  Ethernet0/0                10.5.12.1       YES NVRAM  up                    up
+  Ethernet0/1                10.5.1.254      YES NVRAM  up                    up
+  Ethernet0/2                unassigned      YES NVRAM  administratively down down
+  Ethernet0/3                unassigned      YES NVRAM  administratively down down
+  ```
+  * Router 2:
+  ```
+  router2#show ip int br
+  Interface                  IP-Address      OK? Method Status                Protocol
+  Ethernet0/0                10.5.12.2       YES NVRAM  up                    up
+  Ethernet0/1                10.5.2.254      YES NVRAM  up                    up
+  Ethernet0/2                unassigned      YES NVRAM  administratively down down
+  Ethernet0/3                unassigned      YES NVRAM  administratively down down
+  ```
 
 ### Checklist routes 
 
 On parle de toutes les machines :
-* [ ] `router1.tp5.b1`  
+* [X] `router1.tp5.b1`  
   * directement connecté à `net1` et `net12`  
-  * [route à ajouter](../../cours/procedures-cisco.md#ajouter-une-route-statique) : `net2`  
-* [ ] `router2.tp5.b1`
-  * directement connecté à `net2` et `net12`  
-  * [route à ajouter](../../cours/procedures-cisco.md#ajouter-une-route-statique) : `net1`  
-* [ ] `server1.tp5.b1`  
+  * route à ajouter : 
+  ```
+  10.0.0.0/24 is subnetted, 3 subnets
+  C      10.5.12.0 is directly connected, Ethernet0/0
+  S      10.5.2.0 [1/0] via 10.5.12.254
+                  [1/0] via 10.5.12.0
+  C      10.5.1.0 is directly connected, Ethernet0/1
+  ```
+* [X] `router2.tp5.b1`
+  * directement connecté à `net2` et `net12`
+  * route à ajouter : 
+  ```
+       10.0.0.0/24 is subnetted, 3 subnets
+  C     10.5.12.0 is directly connected, Ethernet0/0
+  C     10.5.2.0 is directly connected, Ethernet0/1
+  S     10.5.1.0 [1/0] via 10.5.12.254
+                 [1/0] via 10.5.12.0
+  ```
+* [ ] `server1.tp5.b1`
   * directement connecté à `net1`  
   * [route à ajouter](../../cours/procedures.md#ajouter-une-route-statique) : `net2`
   * [fichiers `hosts`](../../cours/procedures.md#editer-le-fichier-hosts) à remplir : `client1.tp5.b1`, `client2.tp5.b1`
