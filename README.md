@@ -70,6 +70,7 @@ On parle de toutes les machines :
   C      10.5.12.0 is directly connected, Ethernet0/0
   S      10.5.2.0 [1/0] via 10.5.12.254
                   [1/0] via 10.5.12.0
+                  [1/0] via 10.5.12.2
   C      10.5.1.0 is directly connected, Ethernet0/1
   ```
 * [X] `router2.tp5.b1`
@@ -81,30 +82,43 @@ On parle de toutes les machines :
   C     10.5.2.0 is directly connected, Ethernet0/1
   S     10.5.1.0 [1/0] via 10.5.12.254
                  [1/0] via 10.5.12.0
+                 [1/0] via 10.5.12.1
   ```
-* [ ] `server1.tp5.b1`
-  * directement connecté à `net1`  
-  * [route à ajouter](../../cours/procedures.md#ajouter-une-route-statique) : `net2`
-  * [fichiers `hosts`](../../cours/procedures.md#editer-le-fichier-hosts) à remplir : `client1.tp5.b1`, `client2.tp5.b1`
-* [ ] `client1.tp5.b1`
-  * directement connecté à `net2`  
-  * [route à ajouter](../../cours/procedures.md#ajouter-une-route-statique) : `net1`
-  * [fichiers `hosts`](../../cours/procedures.md#editer-le-fichier-hosts) à remplir : `server1.tp5.b1`, `client2.tp5.b1`
-* [ ] `client2.tp5.b1`
-  * directement connecté à `net2`  
-  * [route à ajouter](../../cours/procedures.md#ajouter-une-route-statique) : `net1`
-  * [fichiers `hosts`](../../cours/procedures.md#editer-le-fichier-hosts) à remplir : `server1.tp5.b1`, `client1.tp5.b1`
-* [ ] `router1.tp5.b1`  
-  * directement connecté à `net2`  
-  * [route à ajouter](../../cours/procedures.md#ajouter-une-route-statique) : `net1`  
+* [X] `server1.tp5.b1`
+  * Vers client 1 
+    ```
+    [root@server1 etc]# ping client1
+    PING client1 (10.5.2.10) 56(84) bytes of data.
+    64 bytes from client1 (10.5.2.10): icmp_seq=1 ttl=62 time=64.2 ms
+    64 bytes from client1 (10.5.2.10): icmp_seq=2 ttl=62 time=26.5 ms
+    ```
+  * Vers client 2
+    ```
+    [root@server1 etc]# ping client2
+    PING client2 (10.5.2.11) 56(84) bytes of data.
+    64 bytes from client2 (10.5.2.11): icmp_seq=1 ttl=62 time=43.3 ms
+    64 bytes from client2 (10.5.2.11): icmp_seq=2 ttl=62 time=33.1 ms
+    ```
 
-Pour tester : 
-* remplir [les fichiers `hosts`](../../cours/procedures.md#editer-le-fichier-hosts) des VMs Linux
-* les deux clients doivent pouvoir `ping server1.tp5.b1`
-* et réciproquement :fire:
 
-> **Notez que les clients/serveurs n'ont pas de route vers `net12`**. Et ui. C'est un réseau privé que seuls les routeurs connaissent. 
+* [X] `client1.tp5.b1`
+  * Vers server 1
+    ```
+    [root@client1 etc]# ping server1
+    PING server1 (10.5.1.10) 56(84) bytes of data.
+    64 bytes from server1 (10.5.1.10): icmp_seq=1 ttl=62 time=36.7 ms
+    64 bytes from server1 (10.5.1.10): icmp_seq=2 ttl=62 time=38.0 ms
+    ```
+* [X] `client2.tp5.b1`
+  * Vers server 1
+    ```
+    [root@client2 etc]# ping server1
+    PING server1 (10.5.1.10) 56(84) bytes of data.
+    64 bytes from server1 (10.5.1.10): icmp_seq=1 ttl=62 time=34.7 ms
+    64 bytes from server1 (10.5.1.10): icmp_seq=2 ttl=62 time=43.7 ms
+    ```
 
+    
 # III. DHCP
 Attribuer des IPs statiques et des routes sur les VMs c'est chiant non ? **Serveur [DHCP](../../cours/lexique.md#dhcp--dynamic-host-configuration-protocol)** à la rescousse.  
 
