@@ -120,81 +120,32 @@ On parle de toutes les machines :
 
     
 # III. DHCP
-Attribuer des IPs statiques et des routes sur les VMs c'est chiant non ? **Serveur [DHCP](../../cours/lexique.md#dhcp--dynamic-host-configuration-protocol)** à la rescousse.  
-
-Une section dédiée popera dans le cours d'ici peu.  
-
-Un serveur [DHCP](../../cours/lexique.md#dhcp--dynamic-host-configuration-protocol) :
-* permet d'attribuer dynamiquement des IPs
-  * on a pas besoin de les définir à la main
-* est principalement utilisé pour des [clients](../..//cours/3.md#clientserveur)
-  * on préfère avoir des IPs fixes (statiques) pour les [serveurs](../../cours/3.md#clientserveur) et les équipements réseaux (comme les [routeurs](../../cours/lexique.md#routeur))
-  * ce serait un peu le dawa s'ils changeaient tout le temps
-* permet aussi de distribuer d'autres infos aux [clients](../..//cours/3.md#clientserveur)
-  * comme des routes !
 
 ## 1. Mise en place du serveur DHCP
 
-On va recycler `client2.tp5.b1` pour ça (pour économiser un peu de ressources).  
+**1. Configuration du serveur DHCP**
+* Renommage (ouais c'est joli) du client 2 et activation du serveur dhcp
+  ```
+  [root@dhcp-net2 dhcp]# sudo systemctl status dhcpd
+      Active: active (running) since Tue 2019-02-19 11:22:10 CET; 4min 41s ago
+  ```
 
-**1. [Renommer la machine](../../cours/procedures.md#changer-son-nom-de-domaine**)
-  * pour porter le nom `dhcp-net2.tp5.b1`
-
-**2. Installer le serveur DHCP** en faisant un peu de crasse : 
-  * éteindre la VM dans GNS3
-  * ouvrir VirtualBox
-  * ajouter une carte NAT à la VM
-  * démarrer la VM dans VirtualBox
-  * allumer la carte NAT
-  * `sudo yum install -y dhcp` 
-  * shutdown la VM
-
-**3. Rallumer la VM dans GNS**
-
-**4. Configuration du serveur DHCP**
-* le fichier de configuration se trouve dans `/etc/dhcp/dhcpd.conf`
-  * [un modèle est trouvable ici](./dhcp/dhcpd.conf)
-
-**5. Faire un test**
-* avec une nouvelle VM ou `client1.tp5.b1`
-  * [configurer l'interface en DHCP, en dynamique (pas en statique)](../../cours/procedures.md#définir-une-ip-dynamique-dhcp)
-  * utiliser [`dhclient`](../../cours/lexique.md#dhclient-linux-only)
-* dans un cas comme dans l'autre, vous devriez récupérer une IP dans la plage d'IP définie dans `dhcpd.conf`
+**2. Faire un test**
+* nouvelle adresse ip de `client1` après dhcp
+  ```
+  2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:7c:d5:8a brd ff:ff:ff:ff:ff:ff
+    inet 10.5.2.50/24 brd 10.5.2.255 scope global noprefixroute dynamic enp0s3
+  ```
 
 ## 2. Explorer un peu DHCP
-Le principe du protocole DHCP est le suivant : 
-* on a un serveur sur un réseau, il attend que des clients lui demande des IPs
-* des clients peuvent arriver sur le réseau (câble, WiFi, ou autres) et demander une IP
-* le serveur attribuera une IP dans une plage prédéfinie
-* le serveur va créer un **"bail DHCP"** par client, pour s'en souvenir
-  * **dans le bail il y a écrit "j'ai donné telle IP à telle MAC"**
-  * comme ça, si le même client revient, il garde son IP
 
----
-
-La discussion entre le client et le serveur DHCP se fait en 4 messages simples, **"DORA"** :
-* **"Discover"** : du client vers le serveur
-  * le client cherche un serveur DHCP en envoyant des Discover en broadcast
-* **"Offer"** : du serveur vers le client
-  * Si un serveur reçoit un "Discover" il peut répondre un "Offer" au client
-  * Il propose une IP au client
-* **"Request"** : du client vers le serveur
-  * Permet de demander une IP au serveur
-  * C'est celle que le serveur lui a proposé
-* **"Acknowledge"** : du serveur vers le client
-  * Le serveur attribue l'adresse IP au client
-  * Il crée un bail DHCP en local
-  * Il peut aussi fournir au client d'autres infos comme l'adresse de gateway
-
----
-
-**OKAY**, le but : 
-* faire une demande DHCP
-  * avec [`dhclient`](../../cours/lexique.md#dhclient-linux-only)
-  * capturer avec Wireshark l'échange du DORA
-    * vous pouvez `tcpdump` sur le `client1.tp5.b1` ou sur `dhcp-net2.tp5.b1`
-    * ou vous pouvez clic-droit sur un lien dans GNS3 et lancer une capture
-
----
+**1. Discussion pour demande dhcp**
+  ```
+    1	0.000000	10.5.2.50	10.5.2.11	DHCP	342	DHCP Request  - Transaction ID 0xfcc5106f
+    2	4.244559	10.5.2.50	10.5.2.11	DHCP	342	DHCP Request  - Transaction ID 0xfcc5106f
+    3	5.006033	PcsCompu_7c:d5:8a	PcsCompu_c0:37:99	ARP	42	Who has 10.5.2.11? Tell 10.5.2.50
+  ```
+  Ouai je crois que ça n'a pas bien fonctionné :(
 
 ### IV. Bonus
